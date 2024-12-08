@@ -31,7 +31,9 @@ public class BankAccountService {
                 .type(bankAccountRegister.getType())
                 .balance(BigDecimal.ZERO)
                 .build();
-        return  bankAccountRepository.save(bankAccount);
+        bankAccountRepository.save(bankAccount);
+        user.addBankAccount(bankAccount);
+        return bankAccount;
     }
 
     public String generateAccountNumber() {

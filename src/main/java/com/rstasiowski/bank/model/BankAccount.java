@@ -19,7 +19,7 @@ public class BankAccount {
     @Column(name = "id", nullable = false)
     private Long id;
     private String accountNumber;
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
     private BankAccountType type;

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -27,8 +28,12 @@ public class User {
     private String firstName;
     @Column(nullable = false)
     private String lastName;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private Collection<BankAccount> accounts;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Collection<BankAccount> accounts = new ArrayList<>();
+
+    public void addBankAccount(BankAccount bankAccount) {
+        accounts.add(bankAccount);
+    }
 
     @Override
     public final boolean equals(Object o) {
