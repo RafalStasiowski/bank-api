@@ -3,18 +3,17 @@ package com.rstasiowski.bank.service;
 import com.rstasiowski.bank.dto.UserRegisterDto;
 import com.rstasiowski.bank.model.User;
 import com.rstasiowski.bank.repository.UserRepository;
-import lombok.AllArgsConstructor;
-import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@AllArgsConstructor
 public class UserService {
+    @Autowired
     private UserRepository userRepository;
+    @Autowired
     private PasswordEncoder passwordEncoder;
-    public User registerUser(@NotNull UserRegisterDto registerDto) {
+    public User registerUser(UserRegisterDto registerDto) {
         if (userRepository.existsByEmail(registerDto.getEmail())) {
             throw new IllegalArgumentException("Email already in use");
         }

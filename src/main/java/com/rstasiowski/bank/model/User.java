@@ -4,11 +4,11 @@ import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
 
+import java.util.Collection;
 import java.util.Objects;
 
 @Getter
 @Setter
-@ToString
 @RequiredArgsConstructor
 @Table(name = "users")
 @Entity
@@ -27,6 +27,9 @@ public class User {
     private String firstName;
     @Column(nullable = false)
     private String lastName;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Collection<BankAccount> accounts;
+
     @Override
     public final boolean equals(Object o) {
         if (this == o) return true;
