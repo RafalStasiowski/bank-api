@@ -9,6 +9,8 @@ import com.rstasiowski.bank.repository.BankAccountRepository;
 import com.rstasiowski.bank.repository.UserRepository;
 import com.rstasiowski.bank.service.BankAccountService;
 import com.rstasiowski.bank.service.UserService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,18 +25,35 @@ public class BankAccountServiceTest {
     private BankAccountService bankAccountService;
 
     @Autowired
+    private BankAccountRepository bankAccountRepository;
+
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
 
+    @BeforeEach
+    void setUp() {
+        userRepository.deleteAll();
+        bankAccountRepository.deleteAll();;
+
+    }
+
+    @AfterEach
+    void tearDown() {
+        userRepository.deleteAll();
+        bankAccountRepository.deleteAll();
+    }
+
     @Test
     void testBankAccountCreate() {
-        UserRegisterDto registerDto =  TestUtils.getTestUserRegisterDto();
+        UserRegisterDto registerDto =  TestUtils.getTestUserRegisterDto("1");
         User user = userService.registerUser(registerDto);
-        BankAccountRegisterDto bankAccountRegisterDto = new BankAccountRegisterDto();
-        bankAccountRegisterDto.setUserEmail(registerDto.getEmail());
-        bankAccountRegisterDto.setType(BankAccountType.CHECKING);
+        BankAccountRegisterDto bankAccountRegisterDto = BankAccountRegisterDto.builder()
+                .userEmail(registerDto.getEmail())
+                .type(BankAccountType.CHECKING)
+                .build();
         BankAccount account = bankAccountService.createBankAccount(bankAccountRegisterDto);
         user = userRepository.findById(user.getId()).orElseThrow();
         assert !bankAccountService.findAllBankAccountsByUserId(user.getId()).isEmpty();

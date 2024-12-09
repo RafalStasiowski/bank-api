@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping("/v1/bankAccounts")
+@RequestMapping("/v1/api/bankAccounts")
 public class BankAccountController {
     private BankAccountService bankAccountService;
 

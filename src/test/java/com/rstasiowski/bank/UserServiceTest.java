@@ -33,15 +33,15 @@ public class UserServiceTest {
 
     @Test
     void testRegisterUser() {
-        UserRegisterDto registerDto = TestUtils.getTestUserRegisterDto();
+        UserRegisterDto registerDto = TestUtils.getTestUserRegisterDto("1");
         User user = userService.registerUser(registerDto);
         assertNotNull(user);
     }
 
     @Test
     void shouldThrowExceptionWhenDuplicate() {
-        UserRegisterDto registerDto = TestUtils.getTestUserRegisterDto();
-        UserRegisterDto duplicateRegisterDto = TestUtils.getTestUserRegisterDto();
+        UserRegisterDto registerDto = TestUtils.getTestUserRegisterDto("1");
+        UserRegisterDto duplicateRegisterDto = TestUtils.getTestUserRegisterDto("1");
         userService.registerUser(registerDto);
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.registerUser(duplicateRegisterDto));
         assertEquals("Email already in use", exception.getMessage());
