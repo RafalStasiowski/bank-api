@@ -31,6 +31,7 @@ public class TransferService {
         return createTransfer(accountFrom, accountTo, transferDto.getAmount(), transferDto.getDescription());
     }
 
+    @Transactional
     private void changeBalances(BankAccount accountFrom, BankAccount accountTo, BigDecimal amount) {
         accountFrom.setBalance(accountFrom.getBalance().subtract(amount));
         bankAccountRepository.save(accountFrom);
