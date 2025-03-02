@@ -5,6 +5,7 @@ import com.rstasiowski.bank.dto.AuthResponse;
 import com.rstasiowski.bank.dto.UserRegisterDto;
 import com.rstasiowski.bank.service.UserService;
 import com.rstasiowski.bank.util.JwtUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -15,11 +16,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/v1/auth")
 public class AuthController {
-
+    @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
     private UserService userService;
+    @Autowired
     private JwtUtil jwtUtil;
 
     @PostMapping("/login")
@@ -32,7 +35,7 @@ public class AuthController {
             throw new Exception("Invalid login credentials");
         }
         String token = jwtUtil.generateToken(authRequest.getUsername());
-        return new AuthResponse(token);
+        return AuthResponse.builder().token(token).build();
     }
 
     @PostMapping("/register")

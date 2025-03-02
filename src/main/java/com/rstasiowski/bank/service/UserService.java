@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Set;
+
 @Service
 public class UserService {
     @Autowired
@@ -22,6 +24,7 @@ public class UserService {
                 .password(passwordEncoder.encode(registerDto.getPassword()))
                 .firstName(registerDto.getFirstName())
                 .lastName(registerDto.getLastName())
+                .roles(Set.of("USER"))
                 .build();
         return userRepository.save(user);
     }

@@ -3,10 +3,13 @@ package com.rstasiowski.bank.util;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.function.Function;
@@ -14,18 +17,20 @@ import java.util.function.Function;
 @Component
 public class JwtUtil {
 
-    private final String secretKey = "890A726F6AA23DA00A049BC2EE3A254D9DD39F29F0A9A08907671411EED8CB61";
+    private final String secretKey = "QWxwaGFOb21hZGVTZWNyZXRLZXlXaXRoVGhlUmlnaHRTaXpl";
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     @Getter
-    private final int expirationTimeMils = 1000 * 60 * 60;
+    private final int expirationTimeMils = 1000 * 60 * 60 * 24;
 
     private Key getSigningKey() {
-        return new SecretKeySpec(secretKey.getBytes(), signatureAlgorithm.getJcaName());
+        byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     public String generateToken(String username) {
         return Jwts.builder()
+                .setHeaderParam("typ","JWT")
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + expirationTimeMils))

@@ -6,6 +6,7 @@ import com.rstasiowski.bank.model.User;
 import com.rstasiowski.bank.repository.BankAccountRepository;
 import com.rstasiowski.bank.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -18,8 +19,9 @@ public class BankAccountService {
     private BankAccountRepository bankAccountRepository;
     private UserRepository userRepository;
 
-    public List<BankAccount> findAllBankAccountsByUserId(Long userId) {
-        return bankAccountRepository.findAllByUserId(userId);
+    public List<BankAccount> findAllBankAccountsByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        return bankAccountRepository.findAllByUserId(user.getId());
     }
 
     public BankAccount createBankAccount(BankAccountRegisterDto bankAccountRegister) {
