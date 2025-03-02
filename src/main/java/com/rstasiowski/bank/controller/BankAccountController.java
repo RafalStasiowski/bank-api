@@ -5,6 +5,7 @@ import com.rstasiowski.bank.dto.BankAccountRequestDto;
 import com.rstasiowski.bank.model.BankAccount;
 import com.rstasiowski.bank.service.BankAccountService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,8 +26,8 @@ public class BankAccountController {
     }
 
     @PostMapping("/showAccounts")
-    public ResponseEntity<List<String>> findAllBankAccountsNumberForUser(@RequestBody BankAccountRequestDto accountRequest) {
-        List<String> bankAccounts = bankAccountService.findAllBankAccountsByEmail(accountRequest.getEmail())
+    public ResponseEntity<List<String>> findAllBankAccountsNumberForUser(@RequestBody BankAccountRequestDto accountRequest, Pageable pageable) {
+        List<String> bankAccounts = bankAccountService.findAllBankAccountsByEmail(accountRequest.getEmail(), pageable)
                 .stream()
                 .map(BankAccount::getAccountNumber)
                 .collect(Collectors.toList());

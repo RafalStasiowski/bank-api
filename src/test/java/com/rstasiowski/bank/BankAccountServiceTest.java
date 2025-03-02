@@ -14,6 +14,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Objects;
@@ -56,7 +57,8 @@ public class BankAccountServiceTest {
                 .build();
         BankAccount account = bankAccountService.createBankAccount(bankAccountRegisterDto);
         user = userRepository.findById(user.getId()).orElseThrow();
-        assert !bankAccountService.findAllBankAccountsByUserId(user.getId()).isEmpty();
+        Pageable pageable = Pageable.unpaged();
+        assert !bankAccountService.findAllBankAccountsByEmail(user.getEmail(), pageable).isEmpty();
         assert user.getAccounts().stream()
                 .filter(userAccount -> Objects.equals(userAccount.getId(), account.getId()))
                 .findFirst()

@@ -6,6 +6,7 @@ import com.rstasiowski.bank.model.User;
 import com.rstasiowski.bank.repository.BankAccountRepository;
 import com.rstasiowski.bank.repository.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -19,9 +20,9 @@ public class BankAccountService {
     private BankAccountRepository bankAccountRepository;
     private UserRepository userRepository;
 
-    public List<BankAccount> findAllBankAccountsByEmail(String email) {
+    public List<BankAccount> findAllBankAccountsByEmail(String email, Pageable pageable) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return bankAccountRepository.findAllByUserId(user.getId());
+        return bankAccountRepository.findAllByUserId(user.getId(), pageable);
     }
 
     public BankAccount createBankAccount(BankAccountRegisterDto bankAccountRegister) {
