@@ -21,7 +21,7 @@ public class JwtUtil {
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
 
     @Getter
-    private final int expirationTimeMils = 1000 * 60 * 60 * 24;
+    private final int expirationTimeMils = 1000 * 60 * 60;
 
     private Key getSigningKey() {
         byte[] keyBytes = secretKey.getBytes(StandardCharsets.UTF_8);

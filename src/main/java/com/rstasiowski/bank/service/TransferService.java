@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -19,16 +20,21 @@ public class TransferService {
 
     @Transactional
     public Transfer transfer(TransferDto transferDto) {
-        BankAccount accountFrom = bankAccountRepository.findById(transferDto.getSenderId())
-                .orElseThrow(() -> new IllegalArgumentException("Account does not exist"));
-        BankAccount accountTo = bankAccountRepository.findById(transferDto.getReceiverId())
-                .orElseThrow(() -> new IllegalArgumentException("Account does not exist"));
-
-        if (accountFrom.getBalance().compareTo(transferDto.getAmount()) < 0)
-            throw new IllegalArgumentException("Not enough funds to transfer");
-
+        BankAccount accountFrom = findAccount(transferDto.getSenderId());
+        BankAccount accountTo = findAccount(transferDto.getReceiverId());
+        validateTransferBalance(accountFrom.getBalance(), transferDto.getAmount());
         changeBalances(accountFrom, accountTo, transferDto.getAmount());
         return createTransfer(accountFrom, accountTo, transferDto.getAmount(), transferDto.getDescription());
+    }
+
+    private void validateTransferBalance(BigDecimal balanceFrom, BigDecimal transferAmount) {
+        if (balanceFrom.compareTo(transferAmount) < 0)
+            throw new IllegalArgumentException("Not enough funds to transfer");
+    }
+
+    private BankAccount findAccount(Long userId) {
+        return bankAccountRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Account does not exist"));
     }
 
     @Transactional
@@ -48,4 +54,7 @@ public class TransferService {
                 .build();
         return transferRepository.save(transfer);
     }
+
+
+
 }

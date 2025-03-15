@@ -19,13 +19,17 @@ public class UserService {
         if (userRepository.existsByEmail(registerDto.getEmail())) {
             throw new IllegalArgumentException("Email already in use");
         }
-        User user = User.builder()
+        User user = buildUser(registerDto);
+        return userRepository.save(user);
+    }
+
+    private User buildUser(UserRegisterDto registerDto) {
+        return User.builder()
                 .email(registerDto.getEmail())
                 .password(passwordEncoder.encode(registerDto.getPassword()))
                 .firstName(registerDto.getFirstName())
                 .lastName(registerDto.getLastName())
                 .roles(Set.of("USER"))
                 .build();
-        return userRepository.save(user);
     }
 }
