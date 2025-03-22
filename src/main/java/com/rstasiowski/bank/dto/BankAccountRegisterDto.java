@@ -9,4 +9,5 @@ import lombok.Data;
 public class BankAccountRegisterDto {
     String userEmail;
     BankAccountType type;
+    String currency;
 }

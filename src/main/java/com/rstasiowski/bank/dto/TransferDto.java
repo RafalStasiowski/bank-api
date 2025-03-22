@@ -12,5 +12,6 @@ public class TransferDto {
     private Long senderId;
     private Long receiverId;
     private BigDecimal amount;
+    private String currencyCode;
     private String description;
 }

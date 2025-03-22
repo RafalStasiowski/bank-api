@@ -1,7 +1,10 @@
 package com.rstasiowski.bank.service;
 
+import com.rstasiowski.bank.config.AcceptedCurrenciesConfig;
 import com.rstasiowski.bank.dto.BankAccountRegisterDto;
 import com.rstasiowski.bank.model.BankAccount;
+import com.rstasiowski.bank.model.Money;
+import com.rstasiowski.bank.model.MoneyFactory;
 import com.rstasiowski.bank.model.User;
 import com.rstasiowski.bank.repository.BankAccountRepository;
 import com.rstasiowski.bank.repository.UserRepository;
@@ -19,6 +22,7 @@ import java.util.UUID;
 public class BankAccountService {
     private BankAccountRepository bankAccountRepository;
     private UserRepository userRepository;
+    private MoneyFactory moneyFactory;
 
     public List<BankAccount> findAllBankAccountsByEmail(String email, Pageable pageable) {
         User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
@@ -28,11 +32,12 @@ public class BankAccountService {
     public BankAccount createBankAccount(BankAccountRegisterDto bankAccountRegister) {
         User user = userRepository.findByEmail(bankAccountRegister.getUserEmail())
                 .orElseThrow(() -> new IllegalArgumentException("User with specific email does not exists"));
+
         BankAccount bankAccount = BankAccount.builder()
                 .accountNumber(generateAccountNumber())
                 .user(user)
                 .type(bankAccountRegister.getType())
-                .balance(BigDecimal.ZERO)
+                .balance(moneyFactory.createEmpty(AcceptedCurrenciesConfig.DEFAULT_CURRENCY))
                 .build();
         bankAccountRepository.save(bankAccount);
         user.addBankAccount(bankAccount);

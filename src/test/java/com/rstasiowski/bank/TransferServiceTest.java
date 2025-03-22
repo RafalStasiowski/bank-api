@@ -2,9 +2,7 @@ package com.rstasiowski.bank;
 
 import com.rstasiowski.bank.dto.BankAccountRegisterDto;
 import com.rstasiowski.bank.dto.TransferDto;
-import com.rstasiowski.bank.model.BankAccount;
-import com.rstasiowski.bank.model.Transfer;
-import com.rstasiowski.bank.model.User;
+import com.rstasiowski.bank.model.*;
 import com.rstasiowski.bank.repository.BankAccountRepository;
 import com.rstasiowski.bank.repository.TransferRepository;
 import com.rstasiowski.bank.repository.UserRepository;
@@ -43,6 +41,9 @@ public class TransferServiceTest {
     @Autowired
     private TransferRepository transferRepository;
 
+    @Autowired
+    private MoneyFactory moneyFactory;
+
     @BeforeEach
     void setUp() {
         transferRepository.deleteAll();;
@@ -65,14 +66,17 @@ public class TransferServiceTest {
                 .createBankAccount(TestUtils.getBankAccountRegisterDto(user1.getEmail()));
         BankAccount bankAccount2 = bankAccountService
                 .createBankAccount(TestUtils.getBankAccountRegisterDto(user2.getEmail()));
-        bankAccount1.setBalance(BigDecimal.valueOf(100));
+        Money balance1 = moneyFactory.create(BigDecimal.valueOf(100), "PLN");
+        Money balance2 = moneyFactory.create(BigDecimal.valueOf(55.55), "PLN");
+        bankAccount1.setBalance(balance1);
         bankAccountRepository.save(bankAccount1);
-        bankAccount2.setBalance(BigDecimal.valueOf(55.55));
+        bankAccount2.setBalance(balance2);
         bankAccountRepository.save(bankAccount2);
         TransferDto transferDto = TransferDto.builder()
                 .senderId(bankAccount1.getId())
                 .receiverId(bankAccount2.getId())
                 .amount(BigDecimal.valueOf(100))
+                .currencyCode("PLN")
                 .description("Transfer 1")
                 .build();
         Transfer transfer1 = transferService.transfer(transferDto);
@@ -83,9 +87,9 @@ public class TransferServiceTest {
         assertNotNull(transfer1);
         assertEquals(transfer1.getAccountFrom().getId(), bankAccount1.getId());
         assertEquals(transfer1.getAccountTo().getId(), bankAccount2.getId());
-        assertEquals(transfer1.getAmount(), BigDecimal.valueOf(100));
-        assert bankAccount2.getBalance().equals(BigDecimal.valueOf(155.55));
-        assert bankAccount1.getBalance().compareTo(BigDecimal.ZERO) == 0;
+        assertEquals(transfer1.getAmount(), moneyFactory.create(BigDecimal.valueOf(100), "PLN"));
+        assert bankAccount2.getBalance().equals(moneyFactory.create(BigDecimal.valueOf(155.55), "PLN"));
+        assert bankAccount1.getBalance().compareTo(moneyFactory.create(BigDecimal.ZERO, "PLN")) == 0;
     }
 
 }

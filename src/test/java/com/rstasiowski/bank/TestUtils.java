@@ -3,7 +3,6 @@ package com.rstasiowski.bank;
 import com.rstasiowski.bank.dto.BankAccountRegisterDto;
 import com.rstasiowski.bank.dto.UserRegisterDto;
 import com.rstasiowski.bank.enums.BankAccountType;
-import com.rstasiowski.bank.model.BankAccount;
 
 public class TestUtils {
     public static UserRegisterDto getTestUserRegisterDto(String idn) {

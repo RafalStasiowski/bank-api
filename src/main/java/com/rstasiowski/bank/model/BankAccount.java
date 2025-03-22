@@ -4,8 +4,6 @@ import com.rstasiowski.bank.enums.BankAccountType;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.math.BigDecimal;
-
 @Getter
 @Setter
 @ToString
@@ -26,5 +24,6 @@ public class BankAccount {
     @Column(nullable = false)
     private BankAccountType type;
     @Column(nullable = false)
-    private BigDecimal balance;
+    @Embedded
+    private Money balance;
 }

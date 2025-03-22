@@ -23,7 +23,8 @@ public class Transfer {
     private BankAccount accountFrom;
     @ManyToOne
     private BankAccount accountTo;
-    private BigDecimal amount;
+    @Embedded
+    private Money amount;
     private String description;
     @CreatedDate
     private LocalDateTime timestamp;
