@@ -1,9 +1,8 @@
 package com.rstasiowski.bank.impl;
 
+import com.rstasiowski.bank.interfaces.BankAccount;
 import com.rstasiowski.bank.interfaces.TransferValidationRule;
-import com.rstasiowski.bank.model.BankAccount;
 import com.rstasiowski.bank.model.Money;
-import com.rstasiowski.bank.model.MoneyFactory;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

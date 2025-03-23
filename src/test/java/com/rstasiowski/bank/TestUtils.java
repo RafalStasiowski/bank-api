@@ -1,14 +1,14 @@
 package com.rstasiowski.bank;
 
 import com.rstasiowski.bank.dto.BankAccountRegisterDto;
-import com.rstasiowski.bank.dto.TransferDto;
 import com.rstasiowski.bank.dto.UserRegisterDto;
 import com.rstasiowski.bank.enums.BankAccountType;
-import com.rstasiowski.bank.model.BankAccount;
+import com.rstasiowski.bank.factory.DefaultBankAccountFactory;
+import com.rstasiowski.bank.interfaces.BankAccount;
 import com.rstasiowski.bank.model.Money;
-import com.rstasiowski.bank.model.MoneyFactory;
+import com.rstasiowski.bank.factory.MoneyFactory;
 import com.rstasiowski.bank.model.User;
-import com.rstasiowski.bank.repository.BankAccountRepository;
+import com.rstasiowski.bank.repository.StandardBankAccountRepository;
 import com.rstasiowski.bank.service.BankAccountService;
 import com.rstasiowski.bank.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,10 +25,13 @@ public class TestUtils {
     private MoneyFactory moneyFactory;
 
     @Autowired
+    private DefaultBankAccountFactory bankAccountFactory;
+
+    @Autowired
     private BankAccountService bankAccountService;
 
     @Autowired
-    private BankAccountRepository bankAccountRepository;
+    private StandardBankAccountRepository standardBankAccountRepository;
 
     public UserRegisterDto getTestUserRegisterDto(String idn) {
         UserRegisterDto registerDto = new UserRegisterDto();
@@ -49,10 +52,8 @@ public class TestUtils {
     public BankAccount createBankAccountWithUser(String idn, BigDecimal balance, String currencyCode) {
         User user = userService.registerUser(getTestUserRegisterDto(idn));
         Money accountBalance = moneyFactory.create(balance, currencyCode);
-        BankAccount bankAccount = bankAccountService
-                .createBankAccount(getBankAccountRegisterDto(user.getEmail()));
-        bankAccount.setBalance(accountBalance);
-        bankAccountRepository.save(bankAccount);
+        BankAccount bankAccount = bankAccountFactory.createAccount(BankAccountType.CHECKING, accountBalance, user);
+        bankAccountService.saveInAppropriateRepository(bankAccount);
         return bankAccount;
     }
 

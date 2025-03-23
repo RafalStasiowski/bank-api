@@ -1,7 +1,8 @@
-package com.rstasiowski.bank.model;
+package com.rstasiowski.bank.factory;
 
 
 import com.rstasiowski.bank.config.AcceptedCurrenciesConfig;
+import com.rstasiowski.bank.model.Money;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

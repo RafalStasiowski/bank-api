@@ -1,16 +1,19 @@
 package com.rstasiowski.bank.controller;
 
+import com.rstasiowski.bank.dto.BankAccountDto;
 import com.rstasiowski.bank.dto.BankAccountRegisterDto;
 import com.rstasiowski.bank.dto.BankAccountRequestDto;
-import com.rstasiowski.bank.model.BankAccount;
+import com.rstasiowski.bank.interfaces.BankAccount;
 import com.rstasiowski.bank.service.BankAccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
@@ -26,10 +29,10 @@ public class BankAccountController {
     }
 
     @PostMapping("/showAccounts")
-    public ResponseEntity<List<String>> findAllBankAccountsNumberForUser(@RequestBody BankAccountRequestDto accountRequest, Pageable pageable) {
-        List<String> bankAccounts = bankAccountService.findAllBankAccountsByEmail(accountRequest.getEmail(), pageable)
+    public ResponseEntity<List<BankAccountDto>> findAllBankAccountsNumberForUser(@RequestBody BankAccountRequestDto accountRequest, Pageable pageable) {
+        List<BankAccountDto> bankAccounts = bankAccountService.findAllBankAccountsByEmail(accountRequest.getEmail(), pageable)
                 .stream()
-                .map(BankAccount::getAccountNumber)
+                .map(bankAccount -> new BankAccountDto(bankAccount.getAccountNumber(), bankAccount.getType().name()))
                 .collect(Collectors.toList());
         return ResponseEntity.ok(bankAccounts);
     }

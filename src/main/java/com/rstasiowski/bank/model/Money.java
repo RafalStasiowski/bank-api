@@ -2,7 +2,6 @@ package com.rstasiowski.bank.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,7 +47,7 @@ public class Money {
         return Money.of(this.amount.subtract(other.getAmount()), this.currency);
     }
 
-    public Money multipy(BigDecimal multiplier) {
+    public Money multiply(BigDecimal multiplier) {
         return Money.of(this.amount.multiply(multiplier), this.currency);
     }
 

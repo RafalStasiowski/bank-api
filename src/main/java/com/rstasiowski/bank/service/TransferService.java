@@ -1,24 +1,23 @@
 package com.rstasiowski.bank.service;
 
 import com.rstasiowski.bank.dto.TransferDto;
-import com.rstasiowski.bank.model.BankAccount;
+import com.rstasiowski.bank.interfaces.BankAccount;
+import com.rstasiowski.bank.interfaces.Transfer;
 import com.rstasiowski.bank.model.Money;
-import com.rstasiowski.bank.model.MoneyFactory;
-import com.rstasiowski.bank.model.Transfer;
-import com.rstasiowski.bank.repository.BankAccountRepository;
-import com.rstasiowski.bank.repository.TransferRepository;
+import com.rstasiowski.bank.factory.MoneyFactory;
+import com.rstasiowski.bank.model.StandardTransfer;
+import com.rstasiowski.bank.repository.StandardBankAccountRepository;
+import com.rstasiowski.bank.repository.StandardTransferRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.List;
-
 @Service
 @AllArgsConstructor
 public class TransferService {
-    private BankAccountRepository bankAccountRepository;
-    private TransferRepository transferRepository;
+    private StandardBankAccountRepository standardBankAccountRepository;
+    private BankAccountService bankAccountService;
+    private StandardTransferRepository standardTransferRepository;
     private MoneyFactory moneyFactory;
     private TransferValidationService transferValidationService;
 
@@ -29,32 +28,29 @@ public class TransferService {
         Money transferBalance = moneyFactory.create(transferDto.getAmount(), transferDto.getCurrencyCode());
         transferValidationService.validate(accountFrom, transferBalance);
         changeBalances(accountFrom, accountTo, transferBalance);
-        return createTransfer(accountFrom, accountTo, transferBalance, transferDto.getDescription());
+        return createStandardTransfer(accountFrom, accountTo, transferBalance, transferDto.getDescription());
     }
 
     private BankAccount findAccount(Long userId) {
-        return bankAccountRepository.findById(userId)
+        return standardBankAccountRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("Account does not exist"));
     }
 
     @Transactional
     private void changeBalances(BankAccount accountFrom, BankAccount accountTo, Money amount) {
-        accountFrom.setBalance(accountFrom.getBalance().substract(amount));
-        bankAccountRepository.save(accountFrom);
-        accountTo.setBalance(accountTo.getBalance().add(amount));
-        bankAccountRepository.save(accountTo);
+        accountFrom.withdraw(amount);
+        bankAccountService.saveInAppropriateRepository(accountFrom);
+        accountTo.deposit(amount);
+        bankAccountService.saveInAppropriateRepository(accountTo);
     }
 
-    private Transfer createTransfer(BankAccount accountFrom, BankAccount accountTo, Money amount, String description) {
-        Transfer transfer = Transfer.builder()
+    private Transfer createStandardTransfer(BankAccount accountFrom, BankAccount accountTo, Money amount, String description) {
+        StandardTransfer transfer = StandardTransfer.builder()
                 .accountFrom(accountFrom)
                 .accountTo(accountTo)
                 .amount(amount)
                 .description(description)
                 .build();
-        return transferRepository.save(transfer);
+        return standardTransferRepository.save(transfer);
     }
-
-
-
 }
