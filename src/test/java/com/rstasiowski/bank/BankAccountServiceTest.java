@@ -23,6 +23,9 @@ import java.util.Objects;
 @ActiveProfiles("test")
 public class BankAccountServiceTest {
     @Autowired
+    private TestUtils testUtils;
+
+    @Autowired
     private BankAccountService bankAccountService;
 
     @Autowired
@@ -49,7 +52,7 @@ public class BankAccountServiceTest {
 
     @Test
     void testBankAccountCreate() {
-        UserRegisterDto registerDto =  TestUtils.getTestUserRegisterDto("1");
+        UserRegisterDto registerDto =  testUtils.getTestUserRegisterDto("1");
         User user = userService.registerUser(registerDto);
         BankAccountRegisterDto bankAccountRegisterDto = BankAccountRegisterDto.builder()
                 .userEmail(registerDto.getEmail())

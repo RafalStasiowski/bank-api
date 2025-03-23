@@ -2,6 +2,7 @@ package com.rstasiowski.bank;
 
 import com.rstasiowski.bank.dto.BankAccountRegisterDto;
 import com.rstasiowski.bank.dto.TransferDto;
+import com.rstasiowski.bank.impl.DailyLimitRule;
 import com.rstasiowski.bank.model.*;
 import com.rstasiowski.bank.repository.BankAccountRepository;
 import com.rstasiowski.bank.repository.TransferRepository;
@@ -23,6 +24,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @ActiveProfiles("test")
 public class TransferServiceTest {
+    @Autowired
+    private TestUtils testUtils;
+
     @Autowired
     private TransferService transferService;
 
@@ -60,12 +64,12 @@ public class TransferServiceTest {
 
     @Test
     void testTransferRegister() {
-        User user1 = userService.registerUser(TestUtils.getTestUserRegisterDto("1"));
-        User user2 = userService.registerUser(TestUtils.getTestUserRegisterDto("2"));
+        User user1 = userService.registerUser(testUtils.getTestUserRegisterDto("1"));
+        User user2 = userService.registerUser(testUtils.getTestUserRegisterDto("2"));
         BankAccount bankAccount1 = bankAccountService
-                .createBankAccount(TestUtils.getBankAccountRegisterDto(user1.getEmail()));
+                .createBankAccount(testUtils.getBankAccountRegisterDto(user1.getEmail()));
         BankAccount bankAccount2 = bankAccountService
-                .createBankAccount(TestUtils.getBankAccountRegisterDto(user2.getEmail()));
+                .createBankAccount(testUtils.getBankAccountRegisterDto(user2.getEmail()));
         Money balance1 = moneyFactory.create(BigDecimal.valueOf(100), "PLN");
         Money balance2 = moneyFactory.create(BigDecimal.valueOf(55.55), "PLN");
         bankAccount1.setBalance(balance1);
@@ -90,6 +94,37 @@ public class TransferServiceTest {
         assertEquals(transfer1.getAmount(), moneyFactory.create(BigDecimal.valueOf(100), "PLN"));
         assert bankAccount2.getBalance().equals(moneyFactory.create(BigDecimal.valueOf(155.55), "PLN"));
         assert bankAccount1.getBalance().compareTo(moneyFactory.create(BigDecimal.ZERO, "PLN")) == 0;
+    }
+
+    @Test
+    void dailyLimitRuleTest() {
+        BigDecimal amountOverLimit = DailyLimitRule.MAX_DAILY_LIMIT.getAmount().add(BigDecimal.valueOf(100));
+        BankAccount bankAccount1 = testUtils.createBankAccountWithUser("1", amountOverLimit, "PLN");
+        BankAccount bankAccount2 = testUtils.createBankAccountWithUser("2", BigDecimal.ZERO, "PLN");
+        TransferDto transferDto = TransferDto.builder()
+                .senderId(bankAccount1.getId())
+                .receiverId(bankAccount2.getId())
+                .amount(amountOverLimit)
+                .currencyCode("PLN")
+                .description("Transfer 1")
+                .build();
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> transferService.transfer(transferDto));
+        assertEquals("Transfer exceeds daily limit", exception.getMessage());
+    }
+
+    @Test
+    void enoughFundsRule() {
+        BankAccount bankAccount1 = testUtils.createBankAccountWithUser("1", BigDecimal.valueOf(100), "PLN");
+        BankAccount bankAccount2 = testUtils.createBankAccountWithUser("2", BigDecimal.ZERO, "PLN");
+        TransferDto transferDto = TransferDto.builder()
+                .senderId(bankAccount1.getId())
+                .receiverId(bankAccount2.getId())
+                .amount(BigDecimal.valueOf(110))
+                .currencyCode("PLN")
+                .description("Transfer 1")
+                .build();
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> transferService.transfer(transferDto));
+        assertEquals("Not enough funds to transfer", exception.getMessage());
     }
 
 }

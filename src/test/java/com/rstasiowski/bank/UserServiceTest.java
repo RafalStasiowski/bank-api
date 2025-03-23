@@ -17,6 +17,9 @@ import static org.junit.jupiter.api.Assertions.*;
 @ActiveProfiles("test")
 public class UserServiceTest {
     @Autowired
+    private TestUtils testUtils;
+
+    @Autowired
     private UserRepository userRepository;
     @Autowired
     private UserService userService;
@@ -33,15 +36,15 @@ public class UserServiceTest {
 
     @Test
     void testRegisterUser() {
-        UserRegisterDto registerDto = TestUtils.getTestUserRegisterDto("1");
+        UserRegisterDto registerDto = testUtils.getTestUserRegisterDto("1");
         User user = userService.registerUser(registerDto);
         assertNotNull(user);
     }
 
     @Test
     void shouldThrowExceptionWhenDuplicate() {
-        UserRegisterDto registerDto = TestUtils.getTestUserRegisterDto("1");
-        UserRegisterDto duplicateRegisterDto = TestUtils.getTestUserRegisterDto("1");
+        UserRegisterDto registerDto = testUtils.getTestUserRegisterDto("1");
+        UserRegisterDto duplicateRegisterDto = testUtils.getTestUserRegisterDto("1");
         userService.registerUser(registerDto);
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> userService.registerUser(duplicateRegisterDto));
         assertEquals("Email already in use", exception.getMessage());

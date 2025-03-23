@@ -13,7 +13,7 @@ import java.util.Currency;
 @Component
 @AllArgsConstructor
 public class DailyLimitRule implements TransferValidationRule {
-    private static final Money MAX_DAILY_LIMIT = Money.of(new BigDecimal("5000.00"), Currency.getInstance("PLN"));
+    public static final Money MAX_DAILY_LIMIT = Money.of(new BigDecimal("5000.00"), Currency.getInstance("PLN"));
 
     @Override
     public void validate(BankAccount sender, Money amount) {
