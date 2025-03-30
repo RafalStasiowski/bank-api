@@ -17,7 +17,7 @@ public class TransferController {
 
     @PostMapping("/make")
     public ResponseEntity<?> transfer(@RequestBody TransferDto transferDto) {
-        transferService.transfer(transferDto);
+        transferService.performTransfer(transferDto);
         return ResponseEntity.ok("Transfer has been successfully registered");
     }
 }

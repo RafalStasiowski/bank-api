@@ -1,6 +1,5 @@
 package com.rstasiowski.bank.model;
 
-import com.rstasiowski.bank.interfaces.Transfer;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -14,14 +13,14 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Builder
-public class StandardTransfer implements Transfer {
+public class Transfer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-    @ManyToOne(targetEntity = BankAccount.class)
+    @ManyToOne
     private BankAccount accountFrom;
-    @ManyToOne(targetEntity = BankAccount.class)
+    @ManyToOne
     private BankAccount accountTo;
     @Embedded
     private Money amount;

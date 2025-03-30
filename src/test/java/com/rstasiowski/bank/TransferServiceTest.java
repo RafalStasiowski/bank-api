@@ -1,10 +1,11 @@
 package com.rstasiowski.bank;
 
 import com.rstasiowski.bank.dto.TransferDto;
+import com.rstasiowski.bank.enums.TransferType;
 import com.rstasiowski.bank.factory.MoneyFactory;
 import com.rstasiowski.bank.impl.DailyLimitRule;
 import com.rstasiowski.bank.model.BankAccount;
-import com.rstasiowski.bank.model.StandardTransfer;
+import com.rstasiowski.bank.model.Transfer;
 import com.rstasiowski.bank.repository.BankAccountRepository;
 import com.rstasiowski.bank.repository.TransferRepository;
 import com.rstasiowski.bank.repository.UserRepository;
@@ -73,8 +74,9 @@ public class TransferServiceTest {
                 .amount(BigDecimal.valueOf(100))
                 .currencyCode("PLN")
                 .description("Transfer 1")
+                .type(TransferType.DOMESTIC)
                 .build();
-        StandardTransfer transfer1 = (StandardTransfer) transferService.transfer(transferDto);
+        Transfer transfer1 = transferService.performTransfer(transferDto);
         bankAccount1 = bankAccountRepository.findById(bankAccount1.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Account does not exist"));
         bankAccount2 = bankAccountRepository.findById(bankAccount2.getId())
@@ -98,8 +100,9 @@ public class TransferServiceTest {
                 .amount(amountOverLimit)
                 .currencyCode("PLN")
                 .description("Transfer 1")
+                .type(TransferType.DOMESTIC)
                 .build();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> transferService.transfer(transferDto));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> transferService.performTransfer(transferDto));
         assertEquals("Transfer exceeds daily limit", exception.getMessage());
     }
 
@@ -113,8 +116,9 @@ public class TransferServiceTest {
                 .amount(BigDecimal.valueOf(110))
                 .currencyCode("PLN")
                 .description("Transfer 1")
+                .type(TransferType.DOMESTIC)
                 .build();
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> transferService.transfer(transferDto));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> transferService.performTransfer(transferDto));
         assertEquals("Not enough funds to transfer", exception.getMessage());
     }
 
