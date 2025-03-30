@@ -11,7 +11,6 @@ import com.rstasiowski.bank.repository.TransferRepository;
 import com.rstasiowski.bank.service.TransferValidationService;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 @Service("TRANSFER_DOMESTIC")
