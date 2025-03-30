@@ -10,7 +10,7 @@ import lombok.*;
 @Setter
 @ToString
 @NoArgsConstructor
-public class SavingAccount extends StandardBankAccount {
+public class SavingAccount extends BankAccount {
     public SavingAccount(Money balance, User user) {
         super(balance, user);
     }

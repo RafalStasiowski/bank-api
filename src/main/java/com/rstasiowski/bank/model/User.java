@@ -1,6 +1,5 @@
 package com.rstasiowski.bank.model;
 
-import com.rstasiowski.bank.interfaces.BankAccount;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.proxy.HibernateProxy;
@@ -30,7 +29,7 @@ public class User {
     private String firstName;
     @Column(nullable = false)
     private String lastName;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = StandardBankAccount.class)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = BankAccount.class)
     private Collection<BankAccount> accounts = new ArrayList<>();
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> roles;

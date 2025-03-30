@@ -2,7 +2,6 @@ package com.rstasiowski.bank.model;
 
 
 import com.rstasiowski.bank.enums.BankAccountType;
-import com.rstasiowski.bank.interfaces.BankAccount;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,7 +19,7 @@ import java.util.UUID;
 @Table(name = "bank_accounts")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "account_type", discriminatorType = DiscriminatorType.STRING)
-public abstract class StandardBankAccount implements BankAccount {
+public abstract class BankAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
@@ -36,7 +35,7 @@ public abstract class StandardBankAccount implements BankAccount {
     @Embedded
     private Money balance;
 
-    protected StandardBankAccount(Money initialBalance, User owner) {
+    protected BankAccount(Money initialBalance, User owner) {
         this.balance = initialBalance;
         this.user = owner;
         this.accountNumber = generateAccountNumber();
@@ -46,19 +45,17 @@ public abstract class StandardBankAccount implements BankAccount {
         return user;
     }
 
-    @Override
+
     public void initialize(Money balance, User owner, BankAccountType type) {
         this.balance = balance;
         this.user = owner;
         this.type = type;
     }
 
-    @Override
     public void deposit(Money amount) {
         this.balance = this.balance.add(amount);
     }
 
-    @Override
     public void withdraw(Money amount) {
         this.balance = this.balance.substract(amount);
     }

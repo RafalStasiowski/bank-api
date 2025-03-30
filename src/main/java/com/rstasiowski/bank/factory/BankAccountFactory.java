@@ -1,12 +1,7 @@
 package com.rstasiowski.bank.factory;
 
 import com.rstasiowski.bank.enums.BankAccountType;
-import com.rstasiowski.bank.interfaces.BankAccount;
-import com.rstasiowski.bank.interfaces.BankAccountFactory;
-import com.rstasiowski.bank.model.CheckingAccount;
-import com.rstasiowski.bank.model.Money;
-import com.rstasiowski.bank.model.SavingAccount;
-import com.rstasiowski.bank.model.User;
+import com.rstasiowski.bank.model.*;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;
@@ -14,10 +9,10 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 @Component
-public class DefaultBankAccountFactory implements BankAccountFactory {
+public class BankAccountFactory implements com.rstasiowski.bank.interfaces.BankAccountFactory {
     private final Map<BankAccountType, Supplier<BankAccount>> accountSuppliers;
 
-    public DefaultBankAccountFactory() {
+    public BankAccountFactory() {
         accountSuppliers = new EnumMap<>(BankAccountType.class);
         accountSuppliers.put(BankAccountType.CHECKING, CheckingAccount::new);
         accountSuppliers.put(BankAccountType.SAVING, SavingAccount::new);

@@ -1,6 +1,7 @@
 package com.rstasiowski.bank.interfaces;
 
 import com.rstasiowski.bank.enums.BankAccountType;
+import com.rstasiowski.bank.model.BankAccount;
 import com.rstasiowski.bank.model.Money;
 import com.rstasiowski.bank.model.User;
 

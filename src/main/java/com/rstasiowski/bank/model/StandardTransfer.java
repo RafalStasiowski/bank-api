@@ -1,6 +1,5 @@
 package com.rstasiowski.bank.model;
 
-import com.rstasiowski.bank.interfaces.BankAccount;
 import com.rstasiowski.bank.interfaces.Transfer;
 import jakarta.persistence.*;
 import lombok.*;
@@ -20,9 +19,9 @@ public class StandardTransfer implements Transfer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Long id;
-    @ManyToOne(targetEntity = StandardBankAccount.class)
+    @ManyToOne(targetEntity = BankAccount.class)
     private BankAccount accountFrom;
-    @ManyToOne(targetEntity = StandardBankAccount.class)
+    @ManyToOne(targetEntity = BankAccount.class)
     private BankAccount accountTo;
     @Embedded
     private Money amount;

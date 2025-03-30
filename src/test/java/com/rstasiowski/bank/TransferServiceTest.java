@@ -3,11 +3,10 @@ package com.rstasiowski.bank;
 import com.rstasiowski.bank.dto.TransferDto;
 import com.rstasiowski.bank.factory.MoneyFactory;
 import com.rstasiowski.bank.impl.DailyLimitRule;
-import com.rstasiowski.bank.interfaces.BankAccount;
-import com.rstasiowski.bank.interfaces.Transfer;
+import com.rstasiowski.bank.model.BankAccount;
 import com.rstasiowski.bank.model.StandardTransfer;
-import com.rstasiowski.bank.repository.StandardBankAccountRepository;
-import com.rstasiowski.bank.repository.StandardTransferRepository;
+import com.rstasiowski.bank.repository.BankAccountRepository;
+import com.rstasiowski.bank.repository.TransferRepository;
 import com.rstasiowski.bank.repository.UserRepository;
 import com.rstasiowski.bank.service.BankAccountService;
 import com.rstasiowski.bank.service.TransferService;
@@ -42,25 +41,25 @@ public class TransferServiceTest {
     private UserRepository userRepository;
 
     @Autowired
-    private StandardBankAccountRepository standardBankAccountRepository;
+    private BankAccountRepository bankAccountRepository;
 
     @Autowired
-    private StandardTransferRepository standardTransferRepository;
+    private TransferRepository transferRepository;
 
     @Autowired
     private MoneyFactory moneyFactory;
 
     @BeforeEach
     void setUp() {
-        standardTransferRepository.deleteAll();;
-        standardBankAccountRepository.deleteAll();;
+        transferRepository.deleteAll();;
+        bankAccountRepository.deleteAll();;
         userRepository.deleteAll();
     }
 
     @AfterEach
     void tearDown() {
-        standardTransferRepository.deleteAll();
-        standardBankAccountRepository.deleteAll();
+        transferRepository.deleteAll();
+        bankAccountRepository.deleteAll();
         userRepository.deleteAll();
     }
 
@@ -76,9 +75,9 @@ public class TransferServiceTest {
                 .description("Transfer 1")
                 .build();
         StandardTransfer transfer1 = (StandardTransfer) transferService.transfer(transferDto);
-        bankAccount1 = standardBankAccountRepository.findById(bankAccount1.getId())
+        bankAccount1 = bankAccountRepository.findById(bankAccount1.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Account does not exist"));
-        bankAccount2 = standardBankAccountRepository.findById(bankAccount2.getId())
+        bankAccount2 = bankAccountRepository.findById(bankAccount2.getId())
                 .orElseThrow(() -> new IllegalArgumentException("Account does not exist"));
         assertNotNull(transfer1);
         assertEquals(transfer1.getAccountFrom().getId(), bankAccount1.getId());

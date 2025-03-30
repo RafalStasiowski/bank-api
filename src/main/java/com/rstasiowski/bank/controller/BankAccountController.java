@@ -3,7 +3,6 @@ package com.rstasiowski.bank.controller;
 import com.rstasiowski.bank.dto.BankAccountDto;
 import com.rstasiowski.bank.dto.BankAccountRegisterDto;
 import com.rstasiowski.bank.dto.BankAccountRequestDto;
-import com.rstasiowski.bank.interfaces.BankAccount;
 import com.rstasiowski.bank.service.BankAccountService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Pageable;

@@ -3,9 +3,9 @@ package com.rstasiowski.bank;
 import com.rstasiowski.bank.dto.BankAccountRegisterDto;
 import com.rstasiowski.bank.dto.UserRegisterDto;
 import com.rstasiowski.bank.enums.BankAccountType;
-import com.rstasiowski.bank.interfaces.BankAccount;
+import com.rstasiowski.bank.model.BankAccount;
 import com.rstasiowski.bank.model.User;
-import com.rstasiowski.bank.repository.StandardBankAccountRepository;
+import com.rstasiowski.bank.repository.BankAccountRepository;
 import com.rstasiowski.bank.repository.UserRepository;
 import com.rstasiowski.bank.service.BankAccountService;
 import com.rstasiowski.bank.service.UserService;
@@ -29,7 +29,7 @@ public class BankAccountServiceTest {
     private BankAccountService bankAccountService;
 
     @Autowired
-    private StandardBankAccountRepository standardBankAccountRepository;
+    private BankAccountRepository bankAccountRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -40,14 +40,14 @@ public class BankAccountServiceTest {
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
-        standardBankAccountRepository.deleteAll();;
+        bankAccountRepository.deleteAll();;
 
     }
 
     @AfterEach
     void tearDown() {
         userRepository.deleteAll();
-        standardBankAccountRepository.deleteAll();
+        bankAccountRepository.deleteAll();
     }
 
     @Test

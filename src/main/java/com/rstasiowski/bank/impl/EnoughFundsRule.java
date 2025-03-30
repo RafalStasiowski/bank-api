@@ -1,11 +1,9 @@
 package com.rstasiowski.bank.impl;
 
-import com.rstasiowski.bank.interfaces.BankAccount;
 import com.rstasiowski.bank.interfaces.TransferValidationRule;
+import com.rstasiowski.bank.model.BankAccount;
 import com.rstasiowski.bank.model.Money;
 import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
 
 @Component
 public class EnoughFundsRule implements TransferValidationRule {
