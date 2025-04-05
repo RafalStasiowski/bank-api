@@ -42,7 +42,7 @@ public class Money {
         return Money.of(this.amount.add(other.getAmount()), this.currency);
     }
 
-    public Money substract(Money other) {
+    public Money subtract(Money other) {
         ensureSameCurrency(other);
         return Money.of(this.amount.subtract(other.getAmount()), this.currency);
     }

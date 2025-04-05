@@ -57,7 +57,7 @@ public abstract class BankAccount {
     }
 
     public void withdraw(Money amount) {
-        this.balance = this.balance.substract(amount);
+        this.balance = this.balance.subtract(amount);
     }
 
     public String generateAccountNumber() {
