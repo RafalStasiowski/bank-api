@@ -26,7 +26,8 @@ public class NbpCurrencyConverter implements CurrencyConverter {
     @Override
     public Money convert(Money money, Currency toCurrency) {
         BigDecimal exchangeRate = getExchangeRate(money.getCurrency(), toCurrency);
-        return money.multiply(exchangeRate);
+        BigDecimal resultAmount = money.getAmount().multiply(exchangeRate);
+        return moneyFactory.create(resultAmount, toCurrency);
     }
 
     private BigDecimal getExchangeRate(Currency fromCurrency, Currency toCurrency) {
@@ -55,7 +56,7 @@ public class NbpCurrencyConverter implements CurrencyConverter {
     }
 
     private BigDecimal fetchExchangeRate(Currency currency) {
-        String url = "https://api.nbp.pl/api/exchangerates/rates/{currencyCode}/?format=json";
+        String url = "https://api.nbp.pl/api/exchangerates/rates/A/{currencyCode}/?format=json";
         ResponseEntity<Map> response = restTemplate.getForEntity(url, Map.class, currency.getCurrencyCode());
         List<Map<String, Object>> exchangeRates = (List<Map<String, Object>>) response.getBody().get("rates");
         return new BigDecimal(exchangeRates.get(0).get("mid").toString());

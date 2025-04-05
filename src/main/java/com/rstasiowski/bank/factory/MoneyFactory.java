@@ -20,6 +20,11 @@ public class MoneyFactory {
         return Money.of(amount, currency);
     }
 
+    public Money create(BigDecimal amount, Currency currency) {
+        validateCurrencyCode(currency.getCurrencyCode());
+        return Money.of(amount, currency);
+    }
+
     public Money createEmpty(String currencyCode) {
         Currency currency = Currency.getInstance(currencyCode);
         return Money.of(BigDecimal.ZERO, currency);
