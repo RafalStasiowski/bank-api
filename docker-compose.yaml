@@ -1,0 +1,46 @@
+version: '3.8'
+services:
+  postgres:
+    image: postgres:15
+    container_name: postgres-bank
+    environment:
+      POSTGRES_DB: bank_app
+      POSTGRES_USER: bank_user
+      POSTGRES_PASSWORD: zaq1@WSX
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - bank-net
+
+  bank-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: bank-app:latest
+    container_name: bank-app
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-bank:5432/bank_app
+      SPRING_DATASOURCE_USERNAME: bank_user
+      SPRING_DATASOURCE_PASSWORD: zaq1@WSX
+      PORT: 8080
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - bank-net
+
+  redis:
+    image: redis:6-alpine
+    container_name: redis-bank
+    ports:
+      - "6379:6379"
+
+volumes:
+  pgdata:
+
+networks:
+  bank-net:

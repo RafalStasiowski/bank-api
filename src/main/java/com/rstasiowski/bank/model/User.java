@@ -30,6 +30,7 @@ public class User {
     @Column(nullable = false)
     private String lastName;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, targetEntity = BankAccount.class)
+    @Builder.Default
     private Collection<BankAccount> accounts = new ArrayList<>();
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> roles;

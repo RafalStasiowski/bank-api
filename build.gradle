@@ -44,3 +44,20 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+jar {
+	archiveBaseName.set('bank')
+	archiveVersion.set('')
+	archiveClassifier.set('')
+	manifest {
+		attributes(
+				'Main-Class': 'com.rstasiowski.bank.BankApplication'
+		)
+	}
+}
+
+bootJar {
+	archiveBaseName.set('bank')
+	archiveVersion.set('')
+	archiveClassifier.set('')
+}
