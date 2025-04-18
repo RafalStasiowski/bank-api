@@ -29,12 +29,17 @@ pipeline {
             stage('Deploy') {
                 steps {
                     sshagent (credentials: ['vps-ssh-credentials']) {
-                        sh "ssh user@VPS_IP 'cd /path/to/deployment && docker-compose pull && docker-compose up -d'"
+                        sh "ssh root@joanna163.mikrus.xyz 'cd /app && docker-compose pull && docker-compose up -d'"
                     }
                 }
             }
         }
         post {
+            always {
+                sshagent (credentials: ['vps-ssh-credentials']) {
+                    sh "ssh root@joanna163.mikrus.xyz 'cd /app && docker-compose down -v'"
+                }
+            }
             failure {
                 echo "Pipeline failed!"
             }
